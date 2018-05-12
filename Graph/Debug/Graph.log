@@ -1,0 +1,22 @@
+﻿  Graph.cpp
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(177): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(205): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(320): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(347): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(370): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(378): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(379): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(398): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(407): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(408): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(417): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(420): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(432): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(441): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(442): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(523): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(526): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(530): warning C4018: <: несоответствие типов со знаком и без знака
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(546): warning C4018: <: несоответствие типов со знаком и без знака
+  Graph.vcxproj -> C:\Users\injection735\Documents\Visual Studio 2015\Projects\Graph\Debug\Graph.exe
+  Graph.vcxproj -> C:\Users\injection735\Documents\Visual Studio 2015\Projects\Graph\Debug\Graph.pdb (Full PDB)
