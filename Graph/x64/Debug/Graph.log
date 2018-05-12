@@ -1,0 +1,13 @@
+﻿  Graph.cpp
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(378): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(379): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(407): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(408): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(441): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(442): warning C4800: char: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(502): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(524): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(563): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(571): warning C4267: =: преобразование из "size_t" в "int"; возможна потеря данных
+  Graph.vcxproj -> C:\Users\injection735\Documents\Visual Studio 2015\Projects\Graph\x64\Debug\Graph.exe
+  Graph.vcxproj -> C:\Users\injection735\Documents\Visual Studio 2015\Projects\Graph\x64\Debug\Graph.pdb (Full PDB)

@@ -583,10 +583,15 @@ public:
 			listOfEdge.push_back(Edge(i+1, i+1));
 		}
 	}
+	Graph()
+	{
+
+	}
 
 };
 int main()
 {
+	Graph g;
 	Graph gMatrix = Graph("adjMatrix.txt");
 	gMatrix.transformToListOfEdges();
 	gMatrix.transformToAdjList();
