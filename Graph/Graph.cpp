@@ -97,9 +97,6 @@ public:
 		rank = vector<int>(n);
 
 	}
-
-	
-
 	void makeSet(int x)
 	{
 		p[x] = x;
@@ -111,10 +108,10 @@ public:
 		return (x == p[x] ? x : p[x] = find(p[x]));
 	}
 
-	void unite(int x, int y)
+	int unite(int x, int y)
 	{
 		if ((x = find(x)) == (y = find(y)))
-			return;
+			return 0;
 
 		if (rank[x] <  rank[y])
 			p[x] = y;
@@ -123,6 +120,7 @@ public:
 			if (rank[x] == rank[y])
 				++rank[x];
 		}
+		return 1;
 	}
 };
 
@@ -243,8 +241,18 @@ public:
 		}
 		else if (oldGraphType == 'E')
 		{
-			transformToAdjMatrix();
-			transformToAdjList();
+			for (int i = 0; i < M; i++)
+			{
+				vector<V> temp;
+				for (int j = 0; j < M; j++)
+				{
+					if (listOfEdge[j].first == i + 1 || listOfEdge[j].second == i + 1)
+					{
+						temp.push_back(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
+					}
+				}
+				adjVert.push_back(temp);
+			}
 		}
 		graphType = 'L';
 
@@ -447,10 +455,6 @@ public:
 			getline(fin, tempString);
 
 			tempInt = readInts(tempString);
-			cout << "tempInt[0] = " << tempInt[0];
-			cout << "\n";
-			cout << "tempInt[1] = " << tempInt[1];
-			cout << "\n\n";
 
 			if (isWeighted)
 				listOfEdge.push_back(Edge(tempInt[0], tempInt[1], tempInt[2]));
@@ -460,37 +464,50 @@ public:
 	}
 	Graph getSpaingTreePrima()
 	{
-		transformToAdjMatrix();
-		int n;
-		vector < vector<int> > g;
-		const int INF = 1000000000;
-		vector<bool> used(n);
-		vector<int> min_e(n, INF), sel_e(n, -1);
-		min_e[0] = 0;
-		for (int i = 0; i < n; ++i) 
+		transformToAdjList();
+		writeGraph("htw.txt");
+		vector<vector<V>> vertList = adjVert;
+
+		DSU dsu = DSU(N + 1);
+
+		vector<vector<V>> temp;
+		int edgeCount = 0;
+		vector<int> usedV;
+		vector<V> secondV;
+		vector<bool> isUsed;
+		vector<Edge> edgeList;
+		bool isInited = false;
+		for (int i = 0; i < N; i++)
+			isUsed.push_back(false);
+
+
+		usedV.push_back(1);
+		while (edgeCount < N - 1)
 		{
-			int v = -1;
-			for (int j = 0; j < n; ++j)
-				if (!used[j] && (v == -1 || min_e[j] < min_e[v]))
-					v = j;
-			if (min_e[v] == INF) 
+			int minWeight = -1;
+			int minId = -1;
+			for (int i = 0; i < usedV.size(); i++)
 			{
-				cout << "No MST!";
-				exit(0);
-			}
-
-			used[v] = true;
-			if (sel_e[v] != -1)
-				cout << v << " " << sel_e[v] << endl;
-
-			for (int to = 0; to<n; ++to)
-				if (g[v][to] < min_e[to]) 
+				for (int j = 0; j < vertList[usedV[i] - 1].size(); j++)
 				{
-					min_e[to] = g[v][to];
-					sel_e[to] = v;
+					if ((vertList[usedV[i] - 1][j].weight < minWeight || minWeight == -1) && !isUsed[vertList[usedV[i] - 1][j].id - 1])
+					{
+						minWeight = vertList[usedV[i] - 1][j].weight;
+						minId = vertList[usedV[i] - 1][j].id;
+					}
 				}
-			return Graph(g);
+			}
+			secondV.push_back(V(minId, minWeight));
+			usedV.push_back(minId);
+			isInited = true;
+			isUsed[minId - 1] = true;
+			edgeCount++;
 		}
+		for (int i = 0; i < N - 1; i++)
+		{
+			edgeList.push_back(Edge(usedV[i], secondV[i].id, secondV[i].weight));
+		}
+		return Graph(edgeList, N, N - 1);
 	}
 	Graph getSpaingTreeKruscal()
 	{
@@ -499,59 +516,66 @@ public:
 		vector<Edge> res;
 		vector<Edge> edgeList = listOfEdge;
 		sort(edgeList.begin(), edgeList.end());
-		DSU p(listOfEdge.size());
-		for (int i = 0; i < N; ++i)
-			p.makeSet(i);
-		for (int i = 0; i<M; ++i)
+		for (int i = 0; i < edgeList.size(); i++)
 		{
-			int a = edgeList[i].first, b = edgeList[i].second, l = edgeList[i].weight;
-			if (p.find(a) != p.find(b))
+			cout << edgeList[i].weight << " ";
+		}
+		DSU p(listOfEdge.size());
+		for (int i = 0; i < M; ++i)
+			p.makeSet(i);
+		for (int i = 0; i < M; ++i)
+		{
+			if (p.find(edgeList[i].first) != p.find(edgeList[i].second))
 			{
-				cost += l;
 				res.push_back(edgeList[i]);
-				p.unite(a, b);
+				p.unite(edgeList[i].first, edgeList[i].second);
 			}
 		}
-		return Graph(res);
+		return Graph(res, N, res.size());
 	}
 	Graph getSpaingTreeBoruvka()
 	{
 		transformToListOfEdges();
 		vector<Edge> temp = listOfEdge;
-		vector<Edge> edgeList;
-		DSU dsu = DSU(N);
-		for (size_t i = 0; i < N; ++i)
+		vector<Edge> res;
+		DSU dsu = DSU(N + 1);
+		for (int i = 0; i < N; ++i)
 			dsu.makeSet(i);
 
-		while (temp.size() < N - 1) {
+		while (res.size() < N - 1)
+		{
 			map<int, int> minEdges = map<int, int>();
-			for (int i = 0; i < N; ++i)
+			for (int i = 0; i < N; i++)
 				minEdges[i] = -1;
-			for (int i = 0; i < temp.size(); ++i)
+			for (int i = 0; i < M; i++)
 			{
 				Edge edge = temp[i];
 				int from = edge.first;
 				int to = edge.second;
-				int weight = edge.second;
+				int weight = edge.weight;
 				int fromComponent = dsu.find(from);
 				int toComponent = dsu.find(to);
 
-				if (fromComponent != toComponent) {
-					if (minEdges[fromComponent] == -1 || temp[minEdges[fromComponent]].second > weight)
+				if (fromComponent != toComponent)
+				{
+					if (minEdges[fromComponent] == -1 || temp[minEdges[fromComponent]].weight > weight)
 						minEdges[fromComponent] = i;
-					if (minEdges[toComponent] == -1 || temp[minEdges[toComponent]].second > weight)
+					if (minEdges[toComponent] == -1 || temp[minEdges[toComponent]].weight > weight)
 						minEdges[toComponent] = i;
 				}
 			}
-			for (int i = 0; i < minEdges.size(); i++) {
-				if (minEdges[i] != -1) {
+			for (int i = 0; i < minEdges.size(); i++) 
+			{
+				if (minEdges[i] != -1)
+				{
 					Edge edge = temp[minEdges[i]];
-					dsu.unite(edge.first, edge.second);
-					edgeList.push_back(edge);
+					int isSuccess = dsu.unite(edge.first, edge.second);
+					if (isSuccess == 1)
+						res.push_back(edge);
 				}
 			}
 		}
-		return Graph(edgeList);
+		return Graph(res, N, res.size());
 	}
 	Graph(string s)
 	{
@@ -565,10 +589,11 @@ public:
 		isWeighted = true;
 		isOriented = false;
 	}
-	Graph(vector<Edge> edgeList)
+	Graph(vector<Edge> edgeList, int n, int m)
 	{
 		graphType = 'E';
-		M = edgeList.size();
+		M = m;
+		N = n;
 		for (int i = 0; i < M; i++)
 			N = N > edgeList[i].maxId() ? N : edgeList[i].maxId();
 		listOfEdge = edgeList;
@@ -592,12 +617,20 @@ public:
 int main()
 {
 	Graph g;
-	Graph gMatrix = Graph("adjMatrix.txt");
-	gMatrix.transformToListOfEdges();
-	gMatrix.transformToAdjList();
-	gMatrix.transformToAdjMatrix();
-	gMatrix.writeGraph("outputAdjMatrix.txt");
+	g.readGraph("listOfEdges.txt");
+	
+	Graph b = g.getSpaingTreeKruscal();
+	b.writeGraph("Kruscal.txt");
 
+	Graph a = g.getSpaingTreeBoruvka();
+	a.writeGraph("Boruvka.txt");
+
+	Graph c = g.getSpaingTreePrima();
+	c.writeGraph("Prima.txt");
+
+
+	char ch;
+	cin >> ch;
 	return 0;
 }
 
