@@ -465,7 +465,6 @@ public:
 	Graph getSpaingTreePrima()
 	{
 		transformToAdjList();
-		writeGraph("htw.txt");
 		vector<vector<V>> vertList = adjVert;
 
 		DSU dsu = DSU(N + 1);
@@ -479,7 +478,6 @@ public:
 		bool isInited = false;
 		for (int i = 0; i < N; i++)
 			isUsed.push_back(false);
-
 
 		usedV.push_back(1);
 		while (edgeCount < N - 1)
