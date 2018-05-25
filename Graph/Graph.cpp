@@ -273,15 +273,11 @@ public:
 				{
 					if (adjMatrix[i][j] != 0)
 					{
-						//if (dsu.find(i + 1) != dsu.find(j + 1))
-						//{
-							if (isWeighted)
-								listOfEdge.push_back(Edge(i + 1, j + 1, adjMatrix[i][j]));
-							else
-								listOfEdge.push_back(Edge(i + 1, j + 1));
-							M++;
-							//dsu.unite(i + 1, j + 1);
-						//}
+						if (isWeighted)
+							listOfEdge.push_back(Edge(i + 1, j + 1, adjMatrix[i][j]));
+						else
+							listOfEdge.push_back(Edge(i + 1, j + 1));
+						M++;
 					}
 				}
 			}
@@ -433,8 +429,8 @@ public:
 		tempStringInt = "";
 
 		getline(fin, tempString);
-		isOriented = tempString[0];
-		isWeighted = tempString[2];
+		isOriented = tempString[0] - '0';
+		isWeighted = tempString[2] - '0';
 		
 		for (int i = 0; i < N; i++)
 		{
@@ -467,8 +463,8 @@ public:
 		tempStringInt = "";
 
 		getline(fin, tempString);
-		isOriented = tempString[0];
-		isWeighted = tempString[2];
+		isOriented = tempString[0] - '0';
+		isWeighted = tempString[2] - '0';
 
 		for (int i = 0; i < M; i++)
 		{
@@ -483,6 +479,52 @@ public:
 				listOfEdge.push_back(Edge(tempInt[0], tempInt[1]));
 		}
 	}
+	char currentMark(bool b)
+	{
+		if (b)
+			return 'A';
+		else
+			return 'B';
+	}
+	int CheckBipart(vector<char> marks)
+	{
+		Graph g;
+		if (graphType == 'C')
+			g = Graph(adjMatrix);
+		if (graphType == 'L')
+			g = Graph(adjVert, N);
+		if (graphType == 'E')
+			g = Graph(listOfEdge, N, M);
+		g.transformToAdjList();
+		vector<vector<V>> tempV = g.adjVert;
+		bool isA = true;
+		int currentV = 0;
+		while (true)
+		{
+			if (marks[currentV] != 'A' || marks[currentV] != 'B')
+				marks[currentV] = currentMark(isA);
+			for (int j = 0; j < tempV[currentV].size(); j++)
+			{
+				if (marks[tempV[currentV][j].id - 1] == 'A' || marks[tempV[currentV][j].id - 1] == 'B')
+				{ 
+					if (marks[tempV[currentV][j].id - 1] == marks[currentV])
+					{
+						cout << tempV[currentV][j].id - 1 << " " << currentV;
+						return 0;
+					}
+				}
+				else
+					marks[tempV[currentV][j].id - 1] = currentMark(!isA);
+			}
+			isA = !isA;
+		}
+		return 1;
+	}
+
+	vector<pair<int, int> >getMaximumMatchingBipart()
+	{
+
+	}
 	Graph getSpaingTreePrima()
 	{
 		Graph g;
@@ -495,7 +537,6 @@ public:
 
 		g.transformToAdjList();
 		vector<vector<V>> vertList = g.adjVert;
-		cout << " <AA " << vertList.size()<< " AA>";
 		vector<vector<V>> temp;
 		int edgeCount = 0;
 		vector<int> usedV;
@@ -531,7 +572,6 @@ public:
 			cost += secondV[i].weight;
 			edgeList.push_back(Edge(usedV[i], secondV[i].id, secondV[i].weight));
 		}
-		cout << " COST PRIMA = " << cost << "\n";
 		return Graph(edgeList, N, N - 1);
 	}
 	Graph getSpaingTreeKruscal()
@@ -551,7 +591,6 @@ public:
 		vector<Edge> edgeList = g.listOfEdge;
 		sort(edgeList.begin(), edgeList.end());
 		DSU p(N + 1);
-		cout << "\n";
 		for (int i = 0; i < g.N + 1; i++)
 			p.makeSet(i);
 		for (int i = 0; i < g.M; i++)
@@ -561,10 +600,8 @@ public:
 				res.push_back(edgeList[i]);
 				p.unite(edgeList[i].first, edgeList[i].second);
 				cost += edgeList[i].weight;
-				cout << edgeList[i].first << " "  <<  edgeList[i].second << " " << edgeList[i].weight << "\n";
 			}
 		}
-		cout << " AAA "  << cost << " AAA " ;
 		return Graph(res, N, N - 1);
 	}
 	Graph getSpaingTreeBoruvka()
@@ -617,7 +654,6 @@ public:
 				}
 			}
 		}
-		cout << " AAA " << cost << " AAA ";
 		return Graph(res, N, res.size());
 	}
 	Graph(string s)
@@ -677,6 +713,11 @@ int main()
 	Graph c = g.getSpaingTreePrima();
 	c.writeGraph("Prima.txt");
 
+	Graph d;
+	d.readGraph("pair.txt");
+
+	vector<char> marks(1e5, ' ');
+	cout << "CHECK BIPART " << d.CheckBipart(marks) ;
 	cout << "finished";
 	char ch;
 	cin >> ch;
