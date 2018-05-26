@@ -259,7 +259,6 @@ public:
 	}
 	void transformToListOfEdges()
 	{
-		M = 0;
 		char oldGraphType = graphType;
 		DSU dsu(N + 1);
 		for (int i = 0; i < N + 1; i++)
@@ -650,7 +649,6 @@ public:
 						res.push_back(edge);
 						cost += edge.weight;
 					}
-
 				}
 			}
 		}
@@ -703,7 +701,7 @@ public:
 int main()
 {
 	Graph g;
-	g.readGraph("test.txt");
+	g.readGraph("listOfEdges.txt");
 	Graph b = g.getSpaingTreeKruscal();
 	b.writeGraph("Kruscal.txt");
 
@@ -716,8 +714,8 @@ int main()
 	Graph d;
 	d.readGraph("pair.txt");
 
-	vector<char> marks(1e5, ' ');
-	cout << "CHECK BIPART " << d.CheckBipart(marks) ;
+	//vector<char> marks(1e5, ' ');
+	//cout << "CHECK BIPART " << d.CheckBipart(marks) ;
 	cout << "finished";
 	char ch;
 	cin >> ch;
