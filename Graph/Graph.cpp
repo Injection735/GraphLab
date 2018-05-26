@@ -551,6 +551,7 @@ public:
 		{
 			int minWeight = -1;
 			int minId = -1;
+			int minIdSecond = -1;
 			for (int i = 0; i < usedV.size(); i++)
 			{
 				for (int j = 0; j < vertList[usedV[i] - 1].size(); j++)
@@ -559,20 +560,17 @@ public:
 					{
 						minWeight = vertList[usedV[i] - 1][j].weight;
 						minId = vertList[usedV[i] - 1][j].id;
+						minIdSecond = i + 1;
 					}
 				}
 			}
 			secondV.push_back(V(minId, minWeight));
 			usedV.push_back(minId);
 			isUsed[minId - 1] = true;
+			edgeList.push_back(Edge(minId, minIdSecond, minWeight));
 			edgeCount++;
 		}
 		int cost = 0;
-		for (int i = 0; i < N - 1; i++)
-		{
-			cost += secondV[i].weight;
-			edgeList.push_back(Edge(usedV[i], secondV[i].id, secondV[i].weight));
-		}
 		cout << cost << "\n";
 		return Graph(edgeList, N, N - 1);
 	}
