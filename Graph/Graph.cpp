@@ -266,6 +266,7 @@ public:
 
 		if (oldGraphType == 'C')
 		{
+			M = 0;
 			for (int i = 0; i < N; i++)
 			{
 				for (int j = 0; j < N; j++)
@@ -284,6 +285,7 @@ public:
 		}
 		else if (oldGraphType == 'L')
 		{
+			M = 0;
 			for (int i = 0; i < N; i++)
 			{
 				for (int j = 0; j < adjVert[i].size(); j++)
@@ -571,6 +573,7 @@ public:
 			cost += secondV[i].weight;
 			edgeList.push_back(Edge(usedV[i], secondV[i].id, secondV[i].weight));
 		}
+		cout << cost << "\n";
 		return Graph(edgeList, N, N - 1);
 	}
 	Graph getSpaingTreeKruscal()
@@ -601,6 +604,7 @@ public:
 				cost += edgeList[i].weight;
 			}
 		}
+		cout << cost << "\n";
 		return Graph(res, N, N - 1);
 	}
 	Graph getSpaingTreeBoruvka()
@@ -652,6 +656,7 @@ public:
 				}
 			}
 		}
+		cout << cost << "\n";
 		return Graph(res, N, res.size());
 	}
 	Graph(string s)
@@ -701,7 +706,7 @@ public:
 int main()
 {
 	Graph g;
-	g.readGraph("listOfEdges.txt");
+	g.readGraph("test.txt");
 	Graph b = g.getSpaingTreeKruscal();
 	b.writeGraph("Kruscal.txt");
 
@@ -710,10 +715,6 @@ int main()
 
 	Graph c = g.getSpaingTreePrima();
 	c.writeGraph("Prima.txt");
-
-	Graph d;
-	d.readGraph("pair.txt");
-
 	//vector<char> marks(1e5, ' ');
 	//cout << "CHECK BIPART " << d.CheckBipart(marks) ;
 	cout << "finished";
