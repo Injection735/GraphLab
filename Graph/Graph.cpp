@@ -12,6 +12,7 @@
 #include <utility>
 #include <algorithm>
 #include <map>
+#include <queue>
 
 using namespace std;
 struct V
@@ -290,12 +291,12 @@ public:
 			{
 				for (int j = 0; j < adjVert[i].size(); j++)
 				{
-					if (dsu.find(adjVert[i][j].id) != dsu.find(i + 1))
-					{
-						dsu.unite(adjVert[i][j].id, i + 1);
-						listOfEdge.push_back(Edge(i + 1, adjVert[i][j].id, adjVert[i][j].weight));
-						M++;
-					}
+					if (find(listOfEdge.begin(), listOfEdge.end(), Edge(i + 1, adjVert[i][j].id, adjVert[i][j].weight)) != listOfEdge.end())
+						if (find(listOfEdge.begin(), listOfEdge.end(), Edge(adjVert[i][j].id, i + 1, adjVert[i][j].weight)) != listOfEdge.end())
+						{
+							listOfEdge.push_back(Edge(i + 1, adjVert[i][j].id, adjVert[i][j].weight));
+							M++;
+						}
 				}
 			}
 			adjVert.clear();
@@ -538,16 +539,97 @@ public:
 
 		g.transformToAdjList();
 		vector<vector<V>> vertList = g.adjVert;
-		vector<vector<V>> temp;
 		int edgeCount = 0;
 		vector<int> usedV;
-		vector<V> secondV;
 		vector<bool> isUsed(N, false);
 		vector<Edge> edgeList;
-
+		int cost = 0;
+		map<int, int> priority = map<int, int>();
+		for (int i = 0; i < N; i++)
+		{
+			priority[i] = -1;
+		}
+		priority[0] = 9999999;
 		usedV.push_back(1);
 		isUsed[0] = true;
+		int minWeight = -1;
+		int minId = -1;
+		int priorityId = -1;
+		int priorityW = -1;
+		int count = 0;
+		
 		while (edgeCount < N - 1)
+		{
+			priorityId = -1;
+			priorityW = 99999999;
+			for(int i = 0; i < N; i++)
+			{
+				if (priority[i] != -1 && priority[i] < priorityW)
+				{
+					priorityW = priority[i];
+					priorityId = i;
+				}
+			}
+
+			int elementNum = -1;
+			minWeight = 999999999;
+			for (int j = 0; j < vertList[priorityId].size(); j++)
+			{
+				if ((vertList[priorityId][j].weight <= minWeight) && !isUsed[vertList[priorityId][j].id - 1])
+				{
+					minWeight = vertList[priorityId][j].weight;
+					minId = vertList[priorityId][j].id;
+					elementNum = j;
+				}
+				else if (isUsed[vertList[priorityId][j].id - 1])
+				{
+					vertList[priorityId].erase(vertList[priorityId].begin() + j);
+					j--;
+				}
+			}
+			if (elementNum == -1)
+			{
+				priority[priorityId] = -1;
+				continue;
+			}
+			vertList[priorityId].erase(vertList[priorityId].begin() + elementNum);
+			priority[priorityId] = -1;
+			isUsed[minId - 1] = true;
+			for (int j = 0; j < vertList[priorityId].size(); j++)
+			{
+				if ((priority[priorityId] == -1 || vertList[priorityId][j].weight < priority[priorityId]) && !isUsed[vertList[priorityId][j].id - 1])
+					priority[priorityId] = vertList[priorityId][j].weight;
+				else if (isUsed[vertList[priorityId][j].id - 1])
+				{
+					vertList[priorityId].erase(vertList[priorityId].begin() + j);
+					j--;
+				}
+			}
+			priority[minId - 1] = -1;
+			for (int j = 0; j < vertList[minId - 1].size(); j++)
+			{
+				if ((vertList[minId - 1][j].weight < priority[minId - 1] || priority[minId - 1] == -1) && !isUsed[vertList[minId - 1][j].id - 1])
+				{
+					priority[minId - 1] = vertList[minId - 1][j].weight;
+				}
+				else if (isUsed[vertList[minId - 1][j].id - 1])
+				{
+					vertList[minId - 1].erase(vertList[minId - 1].begin() + j);
+					j--;
+				}
+			}
+			isUsed[minId - 1] = true;
+			edgeList.push_back(Edge(priorityId + 1, minId, minWeight));
+			cout << "EDGE " << priorityId + 1 << " " << minId << " WEIGHT = " << minWeight << "\n";
+			cost += minWeight;
+			count++;
+			edgeCount++;
+			minId = -1;
+		}
+		cout <<"\n";
+
+
+		/*while (edgeCount < N - 1)
 		{
 			int minWeight = -1;
 			int minId = -1;
@@ -564,13 +646,13 @@ public:
 					}
 				}
 			}
-			secondV.push_back(V(minId, minWeight));
 			usedV.push_back(minId);
 			isUsed[minId - 1] = true;
 			edgeList.push_back(Edge(minId, minIdSecond, minWeight));
+			cost += minWeight;
 			edgeCount++;
-		}
-		int cost = 0;
+			
+		}*/
 		cout << cost << "\n";
 		return Graph(edgeList, N, N - 1);
 	}
@@ -587,6 +669,7 @@ public:
 		g.transformToListOfEdges();
 
 		int cost = 0;
+		int count = 0;
 		vector<Edge> res;
 		vector<Edge> edgeList = g.listOfEdge;
 		sort(edgeList.begin(), edgeList.end());
@@ -704,7 +787,9 @@ public:
 int main()
 {
 	Graph g;
+	
 	g.readGraph("test.txt");
+	
 	Graph b = g.getSpaingTreeKruscal();
 	b.writeGraph("Kruscal.txt");
 
