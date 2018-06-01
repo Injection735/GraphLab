@@ -540,7 +540,6 @@ public:
 		g.transformToAdjList();
 		vector<vector<V>> vertList = g.adjVert;
 		int edgeCount = 0;
-		vector<int> usedV;
 		vector<bool> isUsed(N, false);
 		vector<Edge> edgeList;
 		int cost = 0;
@@ -549,22 +548,102 @@ public:
 		{
 			priority[i] = -1;
 		}
-		priority[0] = 9999999;
-		usedV.push_back(1);
 		isUsed[0] = true;
 		int minWeight = -1;
 		int minId = -1;
 		int priorityId = -1;
 		int priorityW = -1;
 		int count = 0;
+		int minWeightSecond = -1;
+		for (int j = 0; j < vertList[0].size(); j++)
+		{
+			if (priority[0] == -1 || vertList[0][j].weight < minWeight)
+			{
+				priority[0] = minWeight = vertList[0][j].weight;
+				 
+			}
+		}
+
+		while (edgeCount < N - 1)
+		{
+			priorityId = -1;
+			priorityW = 99999999;
+			for (int i = 0; i < N; i++)
+			{
+				if (priority[i] != -1 && priority[i] <= priorityW)
+				{
+					priorityW = priority[i];
+					priorityId = i;
+				}
+			}
+			minWeight = -1;
+			minId = -1;
+			for (int i = 0; i < vertList[priorityId].size(); i++)
+			{
+				if (priorityW == vertList[priorityId][i].weight && !isUsed[vertList[priorityId][i].id - 1])
+				{
+					minWeight = vertList[priorityId][i].weight;
+					minId = vertList[priorityId][i].id;
+				}
+			}
+
+			if (minId == -1)
+			{
+				priority[priorityId] = -1;
+				for (int i = 0; i < vertList[priorityId].size(); i++)
+				{
+					if ((vertList[priorityId][i].weight < priority[priorityId] || priority[priorityId] == -1) && !isUsed[vertList[priorityId][i].id - 1])
+					{
+						priority[priorityId] = vertList[priorityId][i].weight;
+					}
+				}
+				continue;
+			}
+			//priority[priorityId] = minWeight;
+			minWeightSecond = -1;
+			for (int i = 0; i < vertList[minId - 1].size(); i++)
+			{
+				if ((vertList[minId - 1][i].weight < minWeightSecond || minWeightSecond == -1) && !isUsed[vertList[minId - 1][i].id - 1])
+				{
+					minWeightSecond = vertList[minId - 1][i].weight;
+				}
+			}
+			if (minWeightSecond == -1)
+			{
+				priority[minId - 1] = -1;
+			}
+			priority[minId - 1] = minWeightSecond;
+			isUsed[minId - 1] = true;
+
+			minWeightSecond = -1;
+			for (int i = 0; i < vertList[priorityId].size(); i++)
+			{
+				if ((vertList[priorityId][i].weight < minWeightSecond || minWeightSecond == -1) && !isUsed[vertList[priorityId][i].id - 1])
+				{
+					minWeightSecond = vertList[priorityId][i].weight;
+				}
+			}
+			if (minWeightSecond == -1)
+			{
+				priority[priorityId] = -1;
+			}
+			priority[priorityId] = minWeight;
+			edgeList.push_back(Edge(priorityId + 1, minId, minWeight));
+			cout << priorityId + 1 << " " << minId << " WEIGHT = " << minWeight << "\n" ;
+			cost += minWeight;
+			edgeCount++;
+			count++;
+
+		}
 		
+		/*
 		while (edgeCount < N - 1)
 		{
 			priorityId = -1;
 			priorityW = 99999999;
 			for(int i = 0; i < N; i++)
 			{
-				if (priority[i] != -1 && priority[i] < priorityW)
+				if (priority[i] != -1 && priority[i] <= priorityW)
 				{
 					priorityW = priority[i];
 					priorityId = i;
@@ -573,9 +652,10 @@ public:
 
 			int elementNum = -1;
 			minWeight = 999999999;
+			minId = -1;
 			for (int j = 0; j < vertList[priorityId].size(); j++)
 			{
-				if ((vertList[priorityId][j].weight <= minWeight) && !isUsed[vertList[priorityId][j].id - 1])
+				if ((vertList[priorityId][j].weight == priority[priorityId]) && !isUsed[vertList[priorityId][j].id - 1])
 				{
 					minWeight = vertList[priorityId][j].weight;
 					minId = vertList[priorityId][j].id;
@@ -587,28 +667,32 @@ public:
 					j--;
 				}
 			}
-			if (elementNum == -1)
-			{
-				priority[priorityId] = -1;
-				continue;
-			}
-			vertList[priorityId].erase(vertList[priorityId].begin() + elementNum);
 			priority[priorityId] = -1;
-			isUsed[minId - 1] = true;
+			if (minId != -1)
+				isUsed[minId - 1] = true;
 			for (int j = 0; j < vertList[priorityId].size(); j++)
 			{
-				if ((priority[priorityId] == -1 || vertList[priorityId][j].weight < priority[priorityId]) && !isUsed[vertList[priorityId][j].id - 1])
+				if ((priority[priorityId] == -1 || vertList[priorityId][j].weight <= priority[priorityId]) && !isUsed[vertList[priorityId][j].id - 1])
+				{
+					elementNum = j;
 					priority[priorityId] = vertList[priorityId][j].weight;
+					minId = vertList[priorityId][j].id;
+				}
 				else if (isUsed[vertList[priorityId][j].id - 1])
 				{
 					vertList[priorityId].erase(vertList[priorityId].begin() + j);
 					j--;
 				}
 			}
+			if (elementNum == -1)
+			{
+				continue;
+			}
+			vertList[priorityId].erase(vertList[priorityId].begin() + elementNum);
 			priority[minId - 1] = -1;
 			for (int j = 0; j < vertList[minId - 1].size(); j++)
 			{
-				if ((vertList[minId - 1][j].weight < priority[minId - 1] || priority[minId - 1] == -1) && !isUsed[vertList[minId - 1][j].id - 1])
+				if ((vertList[minId - 1][j].weight <= priority[minId - 1] || priority[minId - 1] == -1) && !isUsed[vertList[minId - 1][j].id - 1])
 				{
 					priority[minId - 1] = vertList[minId - 1][j].weight;
 				}
@@ -627,7 +711,7 @@ public:
 			minId = -1;
 		}
 		cout <<"\n";
-
+		*/
 
 		/*while (edgeCount < N - 1)
 		{
@@ -717,9 +801,9 @@ public:
 
 				if (dsu.find(edge.first) != dsu.find(edge.second))
 				{
-					if (minEdges[dsu.find(edge.second)] == -1 || temp[minEdges[dsu.find(edge.second)]].weight > edge.weight)
+					if (minEdges[dsu.find(edge.second)] == -1 || edge.weight < temp[minEdges[dsu.find(edge.second)]].weight)
 						minEdges[dsu.find(edge.second)] = i;
-					if (minEdges[dsu.find(edge.first)] == -1 || temp[minEdges[dsu.find(edge.first)]].weight > edge.weight)
+					if (minEdges[dsu.find(edge.first)] == -1 || edge.weight < temp[minEdges[dsu.find(edge.first)]].weight)
 						minEdges[dsu.find(edge.first)] = i;
 				}
 			}
