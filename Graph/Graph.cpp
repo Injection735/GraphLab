@@ -482,55 +482,7 @@ public:
 				listOfEdge.push_back(Edge(tempInt[0], tempInt[1]));
 		}
 	}
-	char currentMark(char c)
-	{
-		if (c == 'B')
-			return 'A';
-		else
-			return 'B';
-	}
-	int CheckBipart(vector<char> marks)
-	{
-		Graph g;
-		if (graphType == 'C')
-			g = Graph(adjMatrix);
-		if (graphType == 'L')
-			g = Graph(adjVert, N);
-		if (graphType == 'E')
-			g = Graph(listOfEdge, N, M);
-		g.transformToAdjList();
-		vector<vector<V>> tempV = g.adjVert;
-		bool isAllDone = true;
-		int currentV = 0;
-		marks[0] = 'A';
-		int i = 0;
-		while (true)
-		{
-			if (marks[i] != ' ')
-				for (int j = 0; j < tempV[i].size(); j++)
-				{
-					if (marks[tempV[i][j].id - 1] == ' ')
-						marks[tempV[i][j].id - 1] = currentMark(marks[i]);
-					else if (marks[i] == currentMark(marks[tempV[i][j].id - 1]))
-						return 0;
-				}
-			i++;
-			isAllDone = true;
-			for (int j = 0; j < N; j++)
-			{
-				if (marks[j] != ' ')
-					isAllDone = false;
-			}
-			if (isAllDone)
-				break;
-		}
-		return 1;
-	}
 
-	vector<pair<int, int> >getMaximumMatchingBipart()
-	{
-
-	}
 	Graph getSpaingTreePrima()
 	{
 		Graph g;
@@ -584,79 +536,6 @@ public:
 			}
 		}
 		cout << totalCost;
-		//while (edgeCount < N - 1)
-		//{
-		//	priorityId = -1;
-		//	priorityW = 99999999;
-		//	for (int i = 0; i < N; i++)
-		//	{
-		//		if (priority[i] != -1 && priority[i] <= priorityW)
-		//		{
-		//			priorityW = priority[i];
-		//			priorityId = i;
-		//		}
-		//	}
-		//	minWeight = -1;
-		//	minId = -1;
-		//	for (int i = 0; i < vertList[priorityId].size(); i++)
-		//	{
-		//		if (priorityW == vertList[priorityId][i].weight && !isUsed[vertList[priorityId][i].id - 1])
-		//		{
-		//			minWeight = vertList[priorityId][i].weight;
-		//			minId = vertList[priorityId][i].id;
-		//		}
-		//	}
-
-		//	if (minId == -1)
-		//	{
-		//		priority[priorityId] = -1;
-		//		for (int i = 0; i < vertList[priorityId].size(); i++)
-		//		{
-		//			if ((vertList[priorityId][i].weight < priority[priorityId] || priority[priorityId] == -1) && !isUsed[vertList[priorityId][i].id - 1])
-		//			{
-		//				priority[priorityId] = vertList[priorityId][i].weight;
-		//			}
-		//		}
-		//		continue;
-		//	}
-		//	//priority[priorityId] = minWeight;
-		//	minWeightSecond = -1;
-		//	for (int i = 0; i < vertList[minId - 1].size(); i++)
-		//	{
-		//		if ((vertList[minId - 1][i].weight < minWeightSecond || minWeightSecond == -1) && !isUsed[vertList[minId - 1][i].id - 1])
-		//		{
-		//			minWeightSecond = vertList[minId - 1][i].weight;
-		//		}
-		//	}
-		//	if (minWeightSecond == -1)
-		//	{
-		//		priority[minId - 1] = -1;
-		//	}
-		//	priority[minId - 1] = minWeightSecond;
-		//	isUsed[minId - 1] = true;
-
-		//	minWeightSecond = -1;
-		//	for (int i = 0; i < vertList[priorityId].size(); i++)
-		//	{
-		//		if ((vertList[priorityId][i].weight < minWeightSecond || minWeightSecond == -1) && !isUsed[vertList[priorityId][i].id - 1])
-		//		{
-		//			minWeightSecond = vertList[priorityId][i].weight;
-		//		}
-		//	}
-		//	if (minWeightSecond == -1)
-		//	{
-		//		priority[priorityId] = -1;
-		//	}
-		//	priority[priorityId] = minWeight;
-		//	edgeList.push_back(Edge(priorityId + 1, minId, minWeight));
-		//	cout << priorityId + 1 << " " << minId << " WEIGHT = " << minWeight << "\n" ;
-		//	cost += minWeight;
-		//	edgeCount++;
-		//	count++;
-
-		//}
-		//
-		//cout << cost << "\n";
 		return Graph(edgeList, N, N - 1);
 	}
 	Graph getSpaingTreeKruscal()
@@ -743,17 +622,140 @@ public:
 		cout << cost << "\n";
 		return Graph(res, N, res.size());
 	}
-	int checkEuler(bool &circleExist)
+	//int checkEuler(bool &circleExist)
+	//{
+	//	//TODO
+	//}
+	//vector<int> getEuleranTourFleri()
+	//{
+	//	//TODO
+	//}
+	//vector<int> getEuleranTourEffective() 
+	//{
+	//	//TODO
+	//}
+
+	char currentMark(char c)
 	{
-		//TODO
+		if (c == 'B')
+			return 'A';
+		else
+			return 'B';
 	}
-	vector<int> getEuleranTourFleri()
+	int checkBipart(vector<char> marks)
 	{
-		//TODO
+		Graph g;
+		if (graphType == 'C')
+			g = Graph(adjMatrix);
+		if (graphType == 'L')
+			g = Graph(adjVert, N);
+		if (graphType == 'E')
+			g = Graph(listOfEdge, N, M);
+		g.transformToAdjList();
+		vector<vector<V>> vertList = g.adjVert;
+		bool isAllDone = true;
+		int currentV = 0;
+		marks[0] = 'A';
+		int i = 0;
+		vector<bool> isUsed = vector<bool>(N, false);
+		vector<bool> isWatched = vector<bool>(N, false);
+		isUsed[0] = true;
+		int count = 1;
+		while (true)
+		{
+			isAllDone = true;
+			for (int i = 0; i < N; i++)
+			{
+
+				if (isUsed[i] && !isWatched[i])
+				{
+					isAllDone = false;
+					isWatched[i] = true;
+					for (int j = 0; j < vertList[i].size(); j++)
+					{
+						if (marks[vertList[i][j].id - 1] == ' ')
+						{
+							marks[vertList[i][j].id - 1] = currentMark(marks[i]);
+							isUsed[vertList[i][j].id - 1] = true;
+						}
+						else if (marks[vertList[i][j].id - 1] != currentMark(marks[i]))
+						{
+							return 0;
+						}
+					}
+				}
+
+			}
+			if (isAllDone)
+				break;
+		}
+		bipartMarks = marks;
+		return 1;
 	}
-	vector<int> getEuleranTourEffective() 
+	vector<int> currentMatch;
+	vector<bool> used;
+	vector<char> bipartMarks;
+	vector<vector<V>> BHalf;
+
+	vector<pair<int, int> > getMaximumMatchingBipart()
 	{
-		//TODO
+		transformToAdjList();
+		int n = 0;
+		int k = 0;
+		
+		vector<pair<int, int> > result;
+		for (int i = 0; i < N; i++)
+		{
+			if (bipartMarks[i] == 'A')
+			{
+				BHalf.push_back(adjVert[i]);
+				n++;
+			}
+			else if (bipartMarks[i] == 'B')
+			{
+				BHalf.push_back(vector<V>());
+				k++;
+			}
+			//cout << bipartMarks[i] << " " << i + 1 << endl;
+		}
+		currentMatch.assign(N, -1);
+		vector<bool> usedHalf(N);
+		for (int i = 0; i < N; ++i)
+			for (int j = 0; j < BHalf[i].size(); ++j)
+				if (currentMatch[BHalf[i][j].id - 1] == -1)
+				{
+					currentMatch[BHalf[i][j].id - 1] = i;
+					usedHalf[i] = true;
+					break;
+				}
+		for (int i = 0; i < n; ++i)
+		{
+			if (usedHalf[i])
+				continue;
+			used.assign(n, false);
+			findIncreaseChain(i);
+		}
+
+		for (int i = 0; i < N; ++i)
+			if (currentMatch[i] != -1)
+				result.push_back(pair<int, int>(currentMatch[i] + 1, i + 1));
+		return result;
+	}
+	bool findIncreaseChain(int v)
+	{
+		if (used[v])
+			return false;
+		used[v] = true;
+		for (int i = 0; i < BHalf[v].size(); ++i)
+		{
+			int to = BHalf[v][i].id - 1;
+			if (currentMatch[to] == -1 || findIncreaseChain(currentMatch[to]))
+			{
+				currentMatch[to] = v;
+				return true;
+			}
+		}
+		return false;
 	}
 	Graph(string s)
 	{
@@ -776,7 +778,7 @@ public:
 		isWeighted = true;
 		isOriented = false;
 	}
-	Graph(vector<vector<V>> vertList, int n)
+	Graph(vector<vector<V> > vertList, int n)
 	{
 		graphType = 'L';
 		N = n;
@@ -803,19 +805,27 @@ int main()
 {
 	Graph g;
 	
-	g.readGraph("test.txt");
-	Graph b = g.getSpaingTreeKruscal();
-	b.writeGraph("Kruscal.txt");
+	g.readGraph("pair.txt");
+	//Graph b = g.getSpaingTreeKruscal();
+	//b.writeGraph("Kruscal.txt");
 
-	Graph a = g.getSpaingTreeBoruvka();
-	a.writeGraph("Boruvka.txt");
+	//Graph a = g.getSpaingTreeBoruvka();
+	//a.writeGraph("Boruvka.txt");
 
-	Graph c = g.getSpaingTreePrima();
-	c.writeGraph("Prima.txt");
-
+	//Graph c = g.getSpaingTreePrima();
+	//c.writeGraph("Prima.txt");
+	
 	Graph d = g;
-	//vector<char> marks(1e5, ' ');
-	//cout << "CHECK BIPART " << d.CheckBipart(marks) ;
+	vector<char> marks(1e5, ' ');
+	if (!g.checkBipart(marks))
+		cout << -1 << endl;
+	else
+	{
+		vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
+		cout << vec.size() << endl;
+		for (auto i : vec)
+			cout << i.first << " " << i.second << endl;
+	}
 	cout << "finished";
 	char ch;
 	cin >> ch;
