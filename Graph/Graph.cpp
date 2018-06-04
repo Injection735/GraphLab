@@ -14,6 +14,8 @@
 #include <map>
 #include <queue>
 #include <set>
+#include <stack>
+#include <ctime>
 
 using namespace std;
 struct V
@@ -32,7 +34,6 @@ struct V
 		id = a;
 		weight = w;
 	}
-
 	string toString()
 	{
 		string s = to_string(id);
@@ -167,7 +168,7 @@ public:
 		char oldGraphType = graphType;
 		bool isPushed = false;
 
-		if (oldGraphType == 'L')
+		if (oldGraphType == 'L' && adjVert.size() != 0)
 		{
 			for (int i = 0; i < N; i++)
 			{
@@ -189,9 +190,8 @@ public:
 				}
 				adjMatrix.push_back(tempRow);
 			}
-			adjVert.clear();
 		}
-		if (oldGraphType == 'E')
+		if (oldGraphType == 'E' && listOfEdge.size() != 0)
 		{
 			for (int i = 0; i < N; i++)
 			{
@@ -209,14 +209,13 @@ public:
 				else
 					adjMatrix[listOfEdge[i].first - 1][listOfEdge[i].second - 1] = 1;
 			}
-			listOfEdge.clear();
 		}
 		graphType = 'C';
 	}
 	void transformToAdjList()
 	{
 		char oldGraphType = graphType;
-		if (oldGraphType == 'C')
+		if (oldGraphType == 'C' && adjMatrix.size() != 0)
 		{
 			for (int i = 0; i < N; i++)
 			{
@@ -238,9 +237,8 @@ public:
 				}
 				adjVert.push_back(tempListOfV);
 			}
-			adjMatrix.clear();
 		}
-		else if (oldGraphType == 'E')
+		else if (oldGraphType == 'E' && listOfEdge.size() != 0)
 		{
 			for (int i = 0; i < M; i++)
 			{
@@ -266,7 +264,7 @@ public:
 		for (int i = 0; i < N + 1; i++)
 			dsu.makeSet(i);
 
-		if (oldGraphType == 'C')
+		if (oldGraphType == 'C' && adjMatrix.size() != 0)
 		{
 			M = 0;
 			for (int i = 0; i < N; i++)
@@ -283,9 +281,8 @@ public:
 					}
 				}
 			}
-			adjMatrix.clear();
 		}
-		else if (oldGraphType == 'L')
+		else if (oldGraphType == 'L' && adjVert.size() != 0)
 		{
 			M = 0;
 			for (int i = 0; i < N; i++)
@@ -300,7 +297,6 @@ public:
 						}
 				}
 			}
-			adjVert.clear();
 		}
 		graphType = 'E';
 	}
@@ -485,16 +481,17 @@ public:
 
 	Graph getSpaingTreePrima()
 	{
-		Graph g;
+		///////////////////////
+	/*	Graph g;
 		if (graphType == 'C')
 			g = Graph(adjMatrix);
 		if (graphType == 'L')
 			g = Graph(adjVert, N);
 		if (graphType == 'E')
 			g = Graph(listOfEdge, N, M);
-
-		g.transformToAdjList();
-		vector<vector<V>> vertList = g.adjVert;
+			*/
+		transformToAdjList();
+	/*	vector<vector<V>> vertList = g.adjVert;*/
 		int edgeCount = 0;
 		vector<bool> isUsed(N, false);
 		vector<Edge> edgeList;
@@ -522,10 +519,10 @@ public:
 				edgeList.push_back(Edge(v + 1, selectedEdge[v] + 1, minEdge[v]));
 				totalCost += minEdge[v];
 			}
-			for (size_t j = 0; j < vertList[v].size(); ++j)
+			for (size_t j = 0; j < adjVert[v].size(); ++j)
 			{
-				to = vertList[v][j].id - 1;
-				cost = vertList[v][j].weight;
+				to = adjVert[v][j].id - 1;
+				cost = adjVert[v][j].weight;
 				if (cost < minEdge[to] && !isUsed[to])
 				{
 					q.erase(make_pair(minEdge[to], to));
@@ -535,73 +532,73 @@ public:
 				}
 			}
 		}
-		cout << totalCost;
+		//cout << totalCost;
 		return Graph(edgeList, N, N - 1);
 	}
 	Graph getSpaingTreeKruscal()
 	{
-		Graph g;
-		if (graphType == 'C')
-			g = Graph(adjMatrix);
-		if (graphType == 'L')
-			g = Graph(adjVert, N);
-		if (graphType == 'E')
-			g = Graph(listOfEdge, N, M);
+		//Graph g;
+		//if (graphType == 'C')
+		//	g = Graph(adjMatrix);
+		//if (graphType == 'L')
+		//	g = Graph(adjVert, N);
+		//if (graphType == 'E')
+		//	g = Graph(listOfEdge, N, M);
 
-		g.transformToListOfEdges();
+		transformToListOfEdges();
 
 		int cost = 0;
 		int count = 0;
 		vector<Edge> res;
-		vector<Edge> edgeList = g.listOfEdge;
-		sort(edgeList.begin(), edgeList.end());
+	/*	vector<Edge> edgeList = g.listOfEdge;*/
+		sort(listOfEdge.begin(), listOfEdge.end());
 		DSU p(N + 1);
-		for (int i = 0; i < g.N + 1; i++)
+		for (int i = 0; i < N + 1; i++)
 			p.makeSet(i);
-		for (int i = 0; i < g.M; i++)
+		for (int i = 0; i < M; i++)
 		{
-			if (p.find(edgeList[i].first) != p.find(edgeList[i].second))
+			if (p.find(listOfEdge[i].first) != p.find(listOfEdge[i].second))
 			{
-				res.push_back(edgeList[i]);
-				p.unite(edgeList[i].first, edgeList[i].second);
-				cost += edgeList[i].weight;
+				res.push_back(listOfEdge[i]);
+				p.unite(listOfEdge[i].first, listOfEdge[i].second);
+				cost += listOfEdge[i].weight;
 			}
 		}
-		cout << cost << "\n";
+		//cout << cost << "\n";
 		return Graph(res, N, N - 1);
 	}
 	Graph getSpaingTreeBoruvka()
 	{
-		Graph g;
-		if (graphType == 'C')
-			g = Graph(adjMatrix);
-		if (graphType == 'L')
-			g = Graph(adjVert, N);
-		if (graphType == 'E')
-			g = Graph(listOfEdge, N, M);
+		//Graph g;
+		//if (graphType == 'C')
+		//	g = Graph(adjMatrix);
+		//if (graphType == 'L')
+		//	g = Graph(adjVert, N);
+		//if (graphType == 'E')
+		//	g = Graph(listOfEdge, N, M);
 
-		g.transformToListOfEdges();
+		transformToListOfEdges();
 		int cost = 0;
-		vector<Edge> temp = g.listOfEdge;
+		/*vector<Edge> temp = g.listOfEdge;*/
 		vector<Edge> res;
 		DSU dsu = DSU(N + 1);
 		for (int i = 0; i < N; ++i)
 			dsu.makeSet(i);
 
-		while (res.size() < g.N - 1)
+		while (res.size() < N - 1)
 		{
 			map<int, int> minEdges = map<int, int>();
-			for (int i = 0; i < g.N; i++)
+			for (int i = 0; i < N; i++)
 				minEdges[i] = -1;
-			for (int i = 0; i < g.M; i++)
+			for (int i = 0; i < M; i++)
 			{
-				Edge edge = temp[i];
+				Edge edge = listOfEdge[i];
 
 				if (dsu.find(edge.first) != dsu.find(edge.second))
 				{
-					if (minEdges[dsu.find(edge.first)] == -1 || edge.weight < temp[minEdges[dsu.find(edge.first)]].weight)
+					if (minEdges[dsu.find(edge.first)] == -1 || edge.weight < listOfEdge[minEdges[dsu.find(edge.first)]].weight)
 						minEdges[dsu.find(edge.first)] = i;
-					if (minEdges[dsu.find(edge.second)] == -1 || edge.weight < temp[minEdges[dsu.find(edge.second)]].weight)
+					if (minEdges[dsu.find(edge.second)] == -1 || edge.weight < listOfEdge[minEdges[dsu.find(edge.second)]].weight)
 						minEdges[dsu.find(edge.second)] = i;
 				}
 			}
@@ -609,7 +606,7 @@ public:
 			{
 				if (minEdges[i] != -1)
 				{
-					Edge edge = temp[minEdges[i]];
+					Edge edge = listOfEdge[minEdges[i]];
 					int isSuccess = dsu.unite(edge.first, edge.second);
 					if (isSuccess == 1)
 					{
@@ -619,21 +616,9 @@ public:
 				}
 			}
 		}
-		cout << cost << "\n";
+		//cout << cost << "\n";
 		return Graph(res, N, res.size());
 	}
-	//int checkEuler(bool &circleExist)
-	//{
-	//	//TODO
-	//}
-	//vector<int> getEuleranTourFleri()
-	//{
-	//	//TODO
-	//}
-	//vector<int> getEuleranTourEffective() 
-	//{
-	//	//TODO
-	//}
 
 	char currentMark(char c)
 	{
@@ -757,6 +742,36 @@ public:
 		}
 		return false;
 	}
+
+	//vector<int> getEuleranTourFleri()
+	//{
+	//	int currentV = eulerPriorityV;
+	//	auto vertList = adjVert;
+	//	vector<int> path;
+	//	while (true)
+	//	{
+	//		int nextV = -1;
+	//		for (int i = 0; i < vertList[currentV].size(); i++)
+	//		{
+	//			bool vert = isBridge(i, vertList[currentV][i].id - 1, vertList);
+	//			if ((vert && vertList[currentV].size() == 1) || !vert)
+	//			{
+	//				nextV = vertList[currentV][i].id - 1;
+	//				vertList[currentV].erase(vertList[currentV].begin + i);
+	//				currentV = nextV;
+	//				path.push_back(currentV + 1);
+	//				break;
+	//			}
+	//		}
+	//		if (nextV == -1)
+	//			break;
+	//	}
+	//}
+	//vector<int> getEuleranTourEffective() 
+	//{
+	//	//TODO
+	//}
+
 	Graph(string s)
 	{
 		readGraph(s);
@@ -804,28 +819,30 @@ public:
 int main()
 {
 	Graph g;
-	
-	g.readGraph("pair.txt");
-	//Graph b = g.getSpaingTreeKruscal();
-	//b.writeGraph("Kruscal.txt");
 
-	//Graph a = g.getSpaingTreeBoruvka();
-	//a.writeGraph("Boruvka.txt");
+	g.readGraph("test.txt");
+	Graph b = g.getSpaingTreeKruscal();
+	b.writeGraph("Kruscal.txt");
 
-	//Graph c = g.getSpaingTreePrima();
-	//c.writeGraph("Prima.txt");
+	Graph a = g.getSpaingTreeBoruvka();
+	a.writeGraph("Boruvka.txt");
 	
-	Graph d = g;
-	vector<char> marks(1e5, ' ');
-	if (!g.checkBipart(marks))
-		cout << -1 << endl;
-	else
-	{
-		vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
-		cout << vec.size() << endl;
-		for (auto i : vec)
-			cout << i.first << " " << i.second << endl;
-	}
+	Graph c = g.getSpaingTreePrima();
+	c.writeGraph("Prima.txt");
+	
+	//Graph d = g;
+	//bool b = false;
+	//
+	//vector<char> marks(1e5, ' ');
+	//if (!g.checkBipart(marks))
+	//	cout << -1 << endl;
+	//else
+	//{
+	//	vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
+	//	cout << vec.size() << endl;
+	//	for (auto i : vec)
+	//		cout << i.first << " " << i.second << endl;
+	//}
 	cout << "finished";
 	char ch;
 	cin >> ch;
