@@ -146,6 +146,8 @@ public:
 
 	vector<vector<V> > adjVert;
 
+	vector<vector<V> > adjVertDuplicate;
+
 	vector<Edge> listOfEdge;	
 	
 	void readGraph(string fileName)
@@ -214,6 +216,7 @@ public:
 	}
 	void transformToAdjList()
 	{
+		int count = 0;
 		char oldGraphType = graphType;
 		if (oldGraphType == 'C' && adjMatrix.size() != 0)
 		{
@@ -240,20 +243,23 @@ public:
 		}
 		else if (oldGraphType == 'E' && listOfEdge.size() != 0)
 		{
+			
 			for (int i = 0; i < N; i++)
 			{
 				vector<V> temp;
 				for (int j = 0; j < M; j++)
 				{
-					if (listOfEdge[j].first == i + 1 || listOfEdge[j].second == i + 1)
+					if (listOfEdge[j].first == i + 1)
 					{
 						temp.push_back(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
 					}
 				}
+				count += temp.size();
 				adjVert.push_back(temp);
 			}
 		}
 		graphType = 'L';
+		cout << count << "\n";
 
 
 	}
@@ -532,7 +538,7 @@ public:
 				}
 			}
 		}
-		//cout << totalCost;
+		cout << totalCost;
 		return Graph(edgeList, N, N - 1);
 	}
 	Graph getSpaingTreeKruscal()
@@ -834,7 +840,7 @@ int main()
 {
 	Graph g;
 
-	g.readGraph("MaxBipartTest.txt");
+	g.readGraph("testBipartCrush.txt"); //  testBipartCrush		test
 	//Graph b = g.getSpaingTreeKruscal();
 	//b.writeGraph("Kruscal.txt");
 
