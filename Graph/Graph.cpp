@@ -240,7 +240,7 @@ public:
 		}
 		else if (oldGraphType == 'E' && listOfEdge.size() != 0)
 		{
-			for (int i = 0; i < M; i++)
+			for (int i = 0; i < N; i++)
 			{
 				vector<V> temp;
 				for (int j = 0; j < M; j++)
@@ -644,18 +644,25 @@ public:
 		int i = 0;
 		vector<bool> isUsed = vector<bool>(N, false);
 		vector<bool> isWatched = vector<bool>(N, false);
+		int watchedCount = 0;
 		isUsed[0] = true;
 		int count = 1;
-		while (true)
+		while (watchedCount < N)
 		{
 			isAllDone = true;
 			for (int i = 0; i < N; i++)
 			{
-
+				if (vertList[i].size() == 0 && !isWatched[i])
+				{
+					isWatched[i] = true;
+					marks[i] = 'A';
+					watchedCount++;
+				}
 				if (isUsed[i] && !isWatched[i])
 				{
 					isAllDone = false;
 					isWatched[i] = true;
+					watchedCount++;
 					for (int j = 0; j < vertList[i].size(); j++)
 					{
 						if (marks[vertList[i][j].id - 1] == ' ')
@@ -672,7 +679,14 @@ public:
 
 			}
 			if (isAllDone)
-				break;
+				for (int i = 0; i < N; i++)
+				{
+					if (!isUsed[i])
+					{
+						isUsed[i] = true;
+						break;
+					}
+				}
 		}
 		bipartMarks = marks;
 		return 1;
@@ -820,29 +834,29 @@ int main()
 {
 	Graph g;
 
-	g.readGraph("test.txt");
-	Graph b = g.getSpaingTreeKruscal();
-	b.writeGraph("Kruscal.txt");
+	g.readGraph("MaxBipartTest.txt");
+	//Graph b = g.getSpaingTreeKruscal();
+	//b.writeGraph("Kruscal.txt");
 
-	Graph a = g.getSpaingTreeBoruvka();
-	a.writeGraph("Boruvka.txt");
-	
-	Graph c = g.getSpaingTreePrima();
-	c.writeGraph("Prima.txt");
-	
-	//Graph d = g;
-	//bool b = false;
+	//Graph a = g.getSpaingTreeBoruvka();
+	//a.writeGraph("Boruvka.txt");
 	//
-	//vector<char> marks(1e5, ' ');
-	//if (!g.checkBipart(marks))
-	//	cout << -1 << endl;
-	//else
-	//{
-	//	vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
-	//	cout << vec.size() << endl;
-	//	for (auto i : vec)
-	//		cout << i.first << " " << i.second << endl;
-	//}
+	//Graph c = g.getSpaingTreePrima();
+	//c.writeGraph("Prima.txt");
+	//
+	Graph d = g;
+	bool b = false;
+	
+	vector<char> marks(1e5, ' ');
+	if (!g.checkBipart(marks))
+		cout << -1 << endl;
+	else
+	{
+		vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
+		cout << vec.size() << endl;
+		for (auto i : vec)
+			cout << i.first << " " << i.second << endl;
+	}
 	cout << "finished";
 	char ch;
 	cin >> ch;
