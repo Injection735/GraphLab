@@ -216,7 +216,7 @@ public:
 	}
 	void transformToAdjList()
 	{
-		int count = 0;
+		//int count = 0;
 		char oldGraphType = graphType;
 		if (oldGraphType == 'C' && adjMatrix.size() != 0)
 		{
@@ -254,12 +254,12 @@ public:
 						temp.push_back(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
 					}
 				}
-				count += temp.size();
+				//count += temp.size();
 				adjVert.push_back(temp);
 			}
 		}
 		graphType = 'L';
-		cout << count << "\n";
+		//cout << count << "\n";
 
 
 	}
@@ -538,7 +538,7 @@ public:
 				}
 			}
 		}
-		cout << totalCost;
+		//cout << totalCost;
 		return Graph(edgeList, N, N - 1);
 	}
 	Graph getSpaingTreeKruscal()
@@ -840,29 +840,29 @@ int main()
 {
 	Graph g;
 
-	g.readGraph("testBipartCrush.txt"); //  testBipartCrush		test
-	//Graph b = g.getSpaingTreeKruscal();
-	//b.writeGraph("Kruscal.txt");
+	g.readGraph("test.txt"); //  testBipartCrush		test
+	Graph b = g.getSpaingTreeKruscal();
+	b.writeGraph("Kruscal.txt");
 
-	//Graph a = g.getSpaingTreeBoruvka();
-	//a.writeGraph("Boruvka.txt");
-	//
-	//Graph c = g.getSpaingTreePrima();
-	//c.writeGraph("Prima.txt");
-	//
-	Graph d = g;
-	bool b = false;
+	Graph a = g.getSpaingTreeBoruvka();
+	a.writeGraph("Boruvka.txt");
 	
-	vector<char> marks(1e5, ' ');
-	if (!g.checkBipart(marks))
-		cout << -1 << endl;
-	else
-	{
-		vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
-		cout << vec.size() << endl;
-		for (auto i : vec)
-			cout << i.first << " " << i.second << endl;
-	}
+	Graph c = g.getSpaingTreePrima();
+	c.writeGraph("Prima.txt");
+	
+	//Graph d = g;
+	//bool b = false;
+	//
+	//vector<char> marks(1e5, ' ');
+	//if (!g.checkBipart(marks))
+	//	cout << -1 << endl;
+	//else
+	//{
+	//	vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
+	//	cout << vec.size() << endl;
+	//	for (auto i : vec)
+	//		cout << i.first << " " << i.second << endl;
+	//}
 	cout << "finished";
 	char ch;
 	cin >> ch;
