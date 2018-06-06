@@ -251,43 +251,19 @@ public:
 		}
 		else if (oldGraphType == 'E' && listOfEdge.size() != 0)
 		{
-			
-			for (int i = 0; i < N; i++)
+			adjVert = vector<multiset<V>>(N);
+			for (int j = 0; j < M; j++)
 			{
-				multiset<V> temp;
-				for (int j = 0; j < M; j++)
-				{
-					//if (!isDuplicate)
-					//{
-						if (listOfEdge[j].first == i + 1 || listOfEdge[j].second == i + 1)
-						{
-							temp.insert(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
-						}
-					//}
-					//else
-					//{
-					//	if (listOfEdge[j].first == i + 1 || listOfEdge[j].second == i + 1)
-					//	{
-					//		temp.push_back(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
-					//	}
-					//}
-	
-				}
-				//count += temp.size();
-				adjVert.push_back(temp);
+				adjVert[listOfEdge[j].first - 1].insert(V(listOfEdge[j].second, listOfEdge[j].weight));
+				adjVert[listOfEdge[j].second - 1].insert(V(listOfEdge[j].first, listOfEdge[j].weight));
 			}
 		}
 		graphType = 'L';
-		//cout << count << "\n";
-
-
 	}
 	void transformToListOfEdges()
 	{
 		char oldGraphType = graphType;
 		DSU dsu(N + 1);
-		for (int i = 0; i < N + 1; i++)
-			dsu.makeSet(i);
 
 		if (oldGraphType == 'C' && adjMatrix.size() != 0)
 		{
@@ -512,17 +488,14 @@ public:
 		vector<Edge> edgeList;
 		vector<multiset<V>> result(N);
 		isUsed[0] = true;
-		int totalCost = 0;
-		const int INF = 1000000000;
-		int operationCount = 0;
 
 		multiset <pair<int, int>> q; //  weight key(first)
 		q.insert(make_pair(adjVert[0].begin()->weight, 0));
-		//q.insert(Edge());
 		int currentV = 0;
-		int currentWeight = INF;
+		int currentWeight = 0;
 		int secondV = -1;
 		bool isAdded = false;
+		int totalCost = 0;
 		while(edgeCount < N - 1)
 		{
 			currentWeight = q.begin()->first;
@@ -539,7 +512,6 @@ public:
 						isAdded = true;
 						isUsed[(it->id) - 1] = true;
 						edgeList.push_back(Edge(currentV + 1, it->id, it->weight));
-						//result[currentV].insert(V(it->id, it->weight));
 						edgeCount++;
 						totalCost += it->weight;
 						secondV = (it->id) - 1;
@@ -587,7 +559,7 @@ public:
 
 		}
 		}*/
-		//cout << "PRIMA COST = "<< totalCost << "\n" << "OPERATION COUNT = " << operationCount << "\n";
+		cout << "PRIMA COST = "<< totalCost << "\n";
 		return Graph(edgeList, N, N-1);
 	}
 	Graph getSpaingTreeKruscal()
@@ -870,7 +842,7 @@ public:
 int main()
 {
 	Graph g;
-	g.readGraph("listOfEdges.txt");
+	g.readGraph("test.txt");
 	// Graph gg=g.getSpaingTreeBoruvka();
 	// Graph gg = g.getSpaingTreeKruscal();
 	Graph gg = g.getSpaingTreePrima();
