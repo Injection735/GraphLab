@@ -1,4 +1,4 @@
-// Graph.cpp: ÓÔÂ‰ÂÎˇÂÚ ÚÓ˜ÍÛ ‚ıÓ‰‡ ‰Îˇ ÍÓÌÒÓÎ¸ÌÓ„Ó ÔËÎÓÊÂÌËˇ.
+Ôªø// Graph.cpp: –æ–ø—Ä–µ–¥–µ–ª—è–µ—Ç —Ç–æ—á–∫—É –≤—Ö–æ–¥–∞ –¥–ª—è –∫–æ–Ω—Å–æ–ª—å–Ω–æ–≥–æ –ø—Ä–∏–ª–æ–∂–µ–Ω–∏—è.
 //
 // AAAA
 #include "stdafx.h"
@@ -15,11 +15,11 @@
 #include <queue>
 #include <set>
 #include <stack>
-#include <ctime>
 
 using namespace std;
 struct V
 {
+public:
 	int id;
 	int weight;
 	
@@ -34,14 +34,23 @@ struct V
 		id = a;
 		weight = w;
 	}
-	string toString()
+
+	const bool operator == (V a)
 	{
-		string s = to_string(id);
-		if (weight != 0)
-			s += " " + to_string(weight);
+		return weight == a.weight && id == a.id;
+	}
+	static string toString(const V &a)
+	{
+		string s = to_string(a.id);
+		if (a.weight != 0)
+			s += " " + to_string(a.weight);
 		return s;
 	}
 };
+const bool operator < (const V &v1, const V &v2)
+{
+	return v1.weight < v2.weight;
+}
 struct Edge
 {
 public:
@@ -134,19 +143,18 @@ public:
 	bool isOriented = false;
 	bool isWeighted = false;
 	char graphType;
-	// C Ã¿“–»÷¿ —Ã≈∆ÕŒ—“»
-	// L —œ»—Œ  —Ã≈∆Õ€’ ¬≈–ÿ»Õ
-	// E —œ»—Œ  –≈¡≈–
+	// C –ú–ê–¢–†–ò–¶–ê –°–ú–ï–ñ–ù–û–°–¢–ò
+	// L –°–ü–ò–°–û–ö –°–ú–ï–ñ–ù–´–• –í–ï–†–®–ò–ù
+	// E –°–ü–ò–°–û–ö –†–ï–ë–ï–†
 
-	long int N; //  ŒÀ»◊≈—“¬Œ ¬≈–ÿ»Õ
+	long int N; // –ö–û–õ–ò–ß–ï–°–¢–í–û –í–ï–†–®–ò–ù
 
-	long int M; //  ŒÀ»◊≈—¬Œ –≈¡≈–
+	long int M; // –ö–û–õ–ò–ß–ï–°–í–û –†–ï–ë–ï–†
 	
 	vector<vector<int> > adjMatrix;
 
-	vector<vector<V> > adjVert;
+	vector<multiset<V> > adjVert;
 
-	vector<vector<V> > adjVertDuplicate;
 
 	vector<Edge> listOfEdge;	
 	
@@ -172,17 +180,17 @@ public:
 
 		if (oldGraphType == 'L' && adjVert.size() != 0)
 		{
-			for (int i = 0; i < N; i++)
+			/*for (int i = 0; i < N; i++)
 			{
-				vector<int> tempRow;
+				set<int> tempRow;
 				for (int j = 0; j < N; j++)
 				{
-					for (int k = 0; k < adjVert[i].size(); k++)
-						if (adjVert[i][k].id == j + 1)
+					for (auto it; it != adjVert[i].end(); it++)
+						if (it.id == j + 1)
 						{
 							isPushed = true;
 							if (isWeighted)
-								tempRow.push_back(adjVert[i][k].weight);
+								tempRow.(it.weight);
 							else
 								tempRow.push_back(1);
 						}
@@ -191,7 +199,7 @@ public:
 					isPushed = false;
 				}
 				adjMatrix.push_back(tempRow);
-			}
+			}*/
 		}
 		if (oldGraphType == 'E' && listOfEdge.size() != 0)
 		{
@@ -214,7 +222,7 @@ public:
 		}
 		graphType = 'C';
 	}
-	void transformToAdjList(bool isDuplicate = false)
+	void transformToAdjList()
 	{
 		//int count = 0;
 		char oldGraphType = graphType;
@@ -222,19 +230,19 @@ public:
 		{
 			for (int i = 0; i < N; i++)
 			{
-				vector<V> tempListOfV;
+				multiset<V> tempListOfV;
 				for (int j = 0; j < N; j++)
 				{
 					if (isWeighted)
 					{
 						if (adjMatrix[i][j] != 0)
-							tempListOfV.push_back(V(j + 1, adjMatrix[i][j]));
+							tempListOfV.insert(V(j + 1, adjMatrix[i][j]));
 					}
 					else
 					{
 						if (adjMatrix[i][j] != 0)
 						{
-							tempListOfV.push_back(V(j + 1));
+							tempListOfV.insert(V(j + 1));
 						}
 					}
 				}
@@ -246,23 +254,23 @@ public:
 			
 			for (int i = 0; i < N; i++)
 			{
-				vector<V> temp;
+				multiset<V> temp;
 				for (int j = 0; j < M; j++)
 				{
-					if (isDuplicate)
-					{
-						if (listOfEdge[j].first == i + 1)
-						{
-							temp.push_back(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
-						}
-					}
-					else
-					{
+					//if (!isDuplicate)
+					//{
 						if (listOfEdge[j].first == i + 1 || listOfEdge[j].second == i + 1)
 						{
-							temp.push_back(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
+							temp.insert(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
 						}
-					}
+					//}
+					//else
+					//{
+					//	if (listOfEdge[j].first == i + 1 || listOfEdge[j].second == i + 1)
+					//	{
+					//		temp.push_back(V(listOfEdge[j].first == i + 1 ? listOfEdge[j].second : listOfEdge[j].first, listOfEdge[j].weight));
+					//	}
+					//}
 	
 				}
 				//count += temp.size();
@@ -304,12 +312,12 @@ public:
 			M = 0;
 			for (int i = 0; i < N; i++)
 			{
-				for (int j = 0; j < adjVert[i].size(); j++)
+				for (auto it = adjVert[i].begin(); it != adjVert[i].end(); it++)
 				{
-					if (find(listOfEdge.begin(), listOfEdge.end(), Edge(i + 1, adjVert[i][j].id, adjVert[i][j].weight)) != listOfEdge.end())
-						if (find(listOfEdge.begin(), listOfEdge.end(), Edge(adjVert[i][j].id, i + 1, adjVert[i][j].weight)) != listOfEdge.end())
+					if (find(listOfEdge.begin(), listOfEdge.end(), Edge(i + 1, it -> id, it -> weight)) != listOfEdge.end())
+						if (find(listOfEdge.begin(), listOfEdge.end(), Edge(it -> id, i + 1, it -> weight)) != listOfEdge.end())
 						{
-							listOfEdge.push_back(Edge(i + 1, adjVert[i][j].id, adjVert[i][j].weight));
+							listOfEdge.push_back(Edge(i + 1, it -> id, it -> weight));
 							M++;
 						}
 				}
@@ -356,12 +364,12 @@ public:
 	{
 		for (int i = 0; i < N; i++)
 		{
-			for (int j = 0; j < adjVert[i].size(); j++)
+			for (auto it = adjVert[i].begin(); it != adjVert[i].end(); it++)
 			{
-				fileString += adjVert[i][j].toString();
-				if (j != adjVert[i].size() - 1)
-					fileString += " ";
+				fileString += to_string(it->id) + " " + to_string(it -> weight);
+				fileString += " ";
 			}
+			fileString.pop_back();
 			fileString += "\n";
 		}
 		ofstream fout(fileName);
@@ -402,7 +410,7 @@ public:
 			tempInts.push_back(stoi(tempString));
 		return tempInts;
 	}
-	void readAdjMatrix(string s) // Ã¿“–»÷¿ —Ã≈∆ÕŒ—“»
+	void readAdjMatrix(string s) // –ú–ê–¢–†–ò–¶–ê –°–ú–ï–ñ–ù–û–°–¢–ò
 	{
 		ifstream fin(s);
 		string tempString = "";
@@ -430,7 +438,7 @@ public:
 
 	}
 
-	void readListAdjVertices(string s) // —œ»—Œ  —Ã≈∆Õ€’ ¬≈–ÿ»Õ
+	void readListAdjVertices(string s) // –°–ü–ò–°–û–ö –°–ú–ï–ñ–ù–´–• –í–ï–†–®–ò–ù
 	{
 		ifstream fin(s);
 		string tempString = "";
@@ -450,21 +458,21 @@ public:
 		
 		for (int i = 0; i < N; i++)
 		{
-			vector<V> tempVert;
+			multiset<V> tempVert;
 			vector<int> tempInt;
 			getline(fin, tempString);
 			tempInt = readInts(tempString);
 			if (isWeighted)
 				for (int j = 0; j < tempInt.size(); j+=2)
-					tempVert.push_back(V(tempInt[j], tempInt[j+1]));
+					tempVert.insert(V(tempInt[j], tempInt[j+1]));
 			else
 				for (int j = 0; j < tempInt.size(); j++)
-					tempVert.push_back(V(tempInt[j]));
+					tempVert.insert(V(tempInt[j]));
 			adjVert.push_back(tempVert);
 		}
 
 	}
-	void readEdgeList(string s) // —œ»—Œ  –≈¡≈–
+	void readEdgeList(string s) // –°–ü–ò–°–û–ö –†–ï–ë–ï–†
 	{
 		ifstream fin(s);
 		string tempString = "";
@@ -498,76 +506,97 @@ public:
 
 	Graph getSpaingTreePrima()
 	{
-		///////////////////////
-	/*	Graph g;
-		if (graphType == 'C')
-			g = Graph(adjMatrix);
-		if (graphType == 'L')
-			g = Graph(adjVert, N);
-		if (graphType == 'E')
-			g = Graph(listOfEdge, N, M);
-			*/
 		transformToAdjList();
-	/*	vector<vector<V>> vertList = g.adjVert;*/
 		int edgeCount = 0;
 		vector<bool> isUsed(N, false);
 		vector<Edge> edgeList;
-
+		vector<multiset<V>> result(N);
 		isUsed[0] = true;
-		int to;
-		int cost;
 		int totalCost = 0;
-		int n = N;
 		const int INF = 1000000000;
+		int operationCount = 0;
 
-		vector<int> minEdge(n, INF);
-		vector<int> selectedEdge(n, -1);
-		minEdge[0] = 0;
-		set < pair<int, int> > q;
-		q.insert(make_pair(0, 0));
-		int k = 0;
-		for (int i = 0; i < n; ++i)
+		multiset <pair<int, int>> q; //  weight key(first)
+		q.insert(make_pair(adjVert[0].begin()->weight, 0));
+		//q.insert(Edge());
+		int currentV = 0;
+		int currentWeight = INF;
+		int secondV = -1;
+		bool isAdded = false;
+		while(edgeCount < N - 1)
 		{
-			int v = q.begin()->second;
+			currentWeight = q.begin()->first;
+			currentV = q.begin()->second;
 			q.erase(q.begin());
-			isUsed[v] = true;
-			if (selectedEdge[v] != -1)
+			secondV = -1;
+			isAdded = false;
+			for (auto it = adjVert[currentV].begin(); it != adjVert[currentV].end(); ++it)
 			{
-				edgeList.push_back(Edge(v + 1, selectedEdge[v] + 1, minEdge[v]));
-				totalCost += minEdge[v];
-			}
-			for (size_t j = 0; j < adjVert[v].size(); ++j)
-			{
-				to = adjVert[v][j].id - 1;
-				cost = adjVert[v][j].weight;
-				if (cost < minEdge[to] && !isUsed[to])
+				if (!isUsed[(it->id) - 1])
 				{
-					q.erase(make_pair(minEdge[to], to));
-					minEdge[to] = cost;
-					selectedEdge[to] = v;
-					q.insert(make_pair(minEdge[to], to));
+					if (it->weight == currentWeight && !isAdded)
+					{
+						isAdded = true;
+						isUsed[(it->id) - 1] = true;
+						edgeList.push_back(Edge(currentV + 1, it->id, it->weight));
+						//result[currentV].insert(V(it->id, it->weight));
+						edgeCount++;
+						totalCost += it->weight;
+						secondV = (it->id) - 1;
+					}
+					else
+					{
+						q.insert(make_pair(it->weight, currentV));
+						break;
+					}
 				}
 			}
+			if (secondV != -1)
+			{
+				for (auto it = adjVert[secondV].begin(); it != adjVert[secondV].end(); ++it)
+				{
+					if (!isUsed[(it->id) - 1])
+					{
+						q.insert(make_pair(it->weight, secondV));
+						break;
+					}
+				}
+			}
+
+
 		}
-		cout << totalCost;
-		return Graph(edgeList, N, N - 1);
+		/*int v = q.begin()->second;
+		q.erase(q.begin());
+		isUsed[v] = true;
+		if (selectedEdge[v] != -1)
+		{
+			edgeList.push_back(Edge(v + 1, selectedEdge[v] + 1, minEdge[v]));
+			totalCost += minEdge[v];
+		}
+		for (auto it = adjVert[v].begin(); it != adjVert[v].end(); it++)
+		{
+			to = it -> id - 1;
+			cost = it -> weight;
+			if (cost < minEdge[to] && !isUsed[to])
+		{
+		operationCount++;
+		q.erase(make_pair(minEdge[to], to));
+		minEdge[to] = cost;
+		selectedEdge[to] = v;
+		q.insert(make_pair(minEdge[to], to));
+
+		}
+		}*/
+		//cout << "PRIMA COST = "<< totalCost << "\n" << "OPERATION COUNT = " << operationCount << "\n";
+		return Graph(edgeList, N, M);
 	}
 	Graph getSpaingTreeKruscal()
 	{
-		//Graph g;
-		//if (graphType == 'C')
-		//	g = Graph(adjMatrix);
-		//if (graphType == 'L')
-		//	g = Graph(adjVert, N);
-		//if (graphType == 'E')
-		//	g = Graph(listOfEdge, N, M);
-
 		transformToListOfEdges();
 
 		int cost = 0;
 		int count = 0;
 		vector<Edge> res;
-	/*	vector<Edge> edgeList = g.listOfEdge;*/
 		sort(listOfEdge.begin(), listOfEdge.end());
 		DSU p(N + 1);
 		for (int i = 0; i < N + 1; i++)
@@ -581,22 +610,13 @@ public:
 				cost += listOfEdge[i].weight;
 			}
 		}
-		//cout << cost << "\n";
+		//cout << "KRUSCAL COST = " <<  cost << "\n";
 		return Graph(res, N, N - 1);
 	}
 	Graph getSpaingTreeBoruvka()
 	{
-		//Graph g;
-		//if (graphType == 'C')
-		//	g = Graph(adjMatrix);
-		//if (graphType == 'L')
-		//	g = Graph(adjVert, N);
-		//if (graphType == 'E')
-		//	g = Graph(listOfEdge, N, M);
-
 		transformToListOfEdges();
 		int cost = 0;
-		/*vector<Edge> temp = g.listOfEdge;*/
 		vector<Edge> res;
 		DSU dsu = DSU(N + 1);
 		for (int i = 0; i < N; ++i)
@@ -633,7 +653,7 @@ public:
 				}
 			}
 		}
-		//cout << cost << "\n";
+		//cout << "BORUVKA COST = " << cost << "\n";
 		return Graph(res, N, res.size());
 	}
 
@@ -653,8 +673,8 @@ public:
 			g = Graph(adjVert, N);
 		if (graphType == 'E')
 			g = Graph(listOfEdge, N, M);
-		g.transformToAdjList(true);
-		vector<vector<V>> vertList = g.adjVert;
+		g.transformToAdjList();
+		vector<multiset<V>> vertList = g.adjVert;
 		bool isAllDone = true;
 		int currentV = 0;
 		marks[0] = 'A';
@@ -680,14 +700,14 @@ public:
 					isAllDone = false;
 					isWatched[i] = true;
 					watchedCount++;
-					for (int j = 0; j < vertList[i].size(); j++)
+					for (auto it = vertList[i].begin(); it != vertList[i].end(); it++)
 					{
-						if (marks[vertList[i][j].id - 1] == ' ')
+						if (marks[it -> id - 1] == ' ')
 						{
-							marks[vertList[i][j].id - 1] = currentMark(marks[i]);
-							isUsed[vertList[i][j].id - 1] = true;
+							marks[it -> id - 1] = currentMark(marks[i]);
+							isUsed[it -> id - 1] = true;
 						}
-						else if (marks[vertList[i][j].id - 1] != currentMark(marks[i]))
+						else if (marks[it -> id - 1] != currentMark(marks[i]))
 						{
 							return 0;
 						}
@@ -711,11 +731,11 @@ public:
 	vector<int> currentMatch;
 	vector<bool> used;
 	vector<char> bipartMarks;
-	vector<vector<V>> BHalf;
+	vector<multiset<V>> BHalf;
 
 	vector<pair<int, int> > getMaximumMatchingBipart()
 	{
-		transformToAdjList(true);
+		transformToAdjList();
 		int n = 0;
 		int k = 0;
 		
@@ -729,7 +749,7 @@ public:
 			}
 			else if (bipartMarks[i] == 'B')
 			{
-				BHalf.push_back(vector<V>());
+				BHalf.push_back(multiset<V>());
 				k++;
 			}
 			//cout << bipartMarks[i] << " " << i + 1 << endl;
@@ -737,10 +757,10 @@ public:
 		currentMatch.assign(N, -1);
 		vector<bool> usedHalf(N);
 		for (int i = 0; i < N; ++i)
-			for (int j = 0; j < BHalf[i].size(); ++j)
-				if (currentMatch[BHalf[i][j].id - 1] == -1)
+			for (auto it = BHalf[i].begin(); it != BHalf[i].end(); it++)
+				if (currentMatch[it->id - 1] == -1)
 				{
-					currentMatch[BHalf[i][j].id - 1] = i;
+					currentMatch[it->id - 1] = i;
 					usedHalf[i] = true;
 					break;
 				}
@@ -762,9 +782,9 @@ public:
 		if (used[v])
 			return false;
 		used[v] = true;
-		for (int i = 0; i < BHalf[v].size(); ++i)
+		for (auto it = BHalf[v].begin(); it != BHalf[v].end(); ++it)
 		{
-			int to = BHalf[v][i].id - 1;
+			int to = it -> id - 1;
 			if (currentMatch[to] == -1 || findIncreaseChain(currentMatch[to]))
 			{
 				currentMatch[to] = v;
@@ -824,7 +844,7 @@ public:
 		isWeighted = true;
 		isOriented = false;
 	}
-	Graph(vector<vector<V> > vertList, int n)
+	Graph(vector<multiset<V> > vertList, int n)
 	{
 		graphType = 'L';
 		N = n;
@@ -850,29 +870,19 @@ public:
 int main()
 {
 	Graph g;
-
-	g.readGraph("listOfEdges.txt"); //  testBipartCrush		test
-	Graph b = g.getSpaingTreeKruscal();
-	b.writeGraph("Kruscal.txt");
-
-	Graph a = g.getSpaingTreeBoruvka();
-	a.writeGraph("Boruvka.txt");
-	
-	Graph c = g.getSpaingTreePrima();
-	c.writeGraph("Prima.txt");
-	
-	//Graph d = g;
-	//bool b = false;
-	//
-	//vector<char> marks(1e5, ' ');
-	//if (!g.checkBipart(marks))
-	//	cout << -1 << endl;
-	//else
+	g.readGraph("test.txt");
+	//Graph gg=g.getSpaingTreeBoruvka();
+	//Graph gg = g.getSpaingTreeKruscal();
+	Graph gg=g.getSpaingTreePrima();
+	gg.transformToAdjList();
+	gg.writeGraph("output.txt");
+	//set<V> testSet;
+	//testSet.insert(V(0, 2));
+	//testSet.insert(V(1, 8));
+	//testSet.insert(V(2, 4));
+	//for (auto it = testSet.begin(); it != testSet.end(); it++)
 	//{
-	//	vector<pair<int, int> > vec = g.getMaximumMatchingBipart();
-	//	cout << vec.size() << endl;
-	//	for (auto i : vec)
-	//		cout << i.first << " " << i.second << endl;
+	//	cout << it->id << "\n";
 	//}
 	cout << "finished";
 	char ch;

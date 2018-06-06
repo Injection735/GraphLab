@@ -1,11 +1,11 @@
 ﻿  Graph.cpp
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(419): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(420): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(448): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(449): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(482): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(483): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(637): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
-c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(813): warning C4267: =: преобразование из "size_t" в "long"; возможна потеря данных
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(427): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(428): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(456): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(457): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(490): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(491): warning C4800: int: принудительно задано логическое значение "true" или "false" (предупреждение о производительности)
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(657): warning C4267: аргумент: преобразование из "size_t" в "int"; возможна потеря данных
+c:\users\injection735\documents\visual studio 2015\projects\graph\graph\graph.cpp(833): warning C4267: =: преобразование из "size_t" в "long"; возможна потеря данных
   Graph.vcxproj -> C:\Users\injection735\Documents\Visual Studio 2015\Projects\Graph\x64\Debug\Graph.exe
   Graph.vcxproj -> C:\Users\injection735\Documents\Visual Studio 2015\Projects\Graph\x64\Debug\Graph.pdb (Full PDB)
