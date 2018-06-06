@@ -588,7 +588,7 @@ public:
 		}
 		}*/
 		//cout << "PRIMA COST = "<< totalCost << "\n" << "OPERATION COUNT = " << operationCount << "\n";
-		return Graph(edgeList, N, M);
+		return Graph(edgeList, N, N-1);
 	}
 	Graph getSpaingTreeKruscal()
 	{
@@ -870,20 +870,12 @@ public:
 int main()
 {
 	Graph g;
-	g.readGraph("test.txt");
-	//Graph gg=g.getSpaingTreeBoruvka();
-	//Graph gg = g.getSpaingTreeKruscal();
-	Graph gg=g.getSpaingTreePrima();
-	gg.transformToAdjList();
+	g.readGraph("listOfEdges.txt");
+	// Graph gg=g.getSpaingTreeBoruvka();
+	// Graph gg = g.getSpaingTreeKruscal();
+	Graph gg = g.getSpaingTreePrima();
+	gg.transformToListOfEdges();
 	gg.writeGraph("output.txt");
-	//set<V> testSet;
-	//testSet.insert(V(0, 2));
-	//testSet.insert(V(1, 8));
-	//testSet.insert(V(2, 4));
-	//for (auto it = testSet.begin(); it != testSet.end(); it++)
-	//{
-	//	cout << it->id << "\n";
-	//}
 	cout << "finished";
 	char ch;
 	cin >> ch;
